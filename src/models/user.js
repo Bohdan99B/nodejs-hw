@@ -34,7 +34,7 @@ userSchema.methods.toJSON = function () {
 };
 
 userSchema.pre('save', function (next) {
-  if (this.isModified('email')) {
+  if (!this.username) {
     this.username = this.email;
   }
 
