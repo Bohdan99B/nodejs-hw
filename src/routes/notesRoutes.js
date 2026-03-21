@@ -7,6 +7,7 @@ import {
   deleteNote,
   updateNote
 } from '../controllers/notesController.js';
+import authenticate from '../middleware/authenticate.js';
 import {
   createNoteSchema,
   getAllNotesSchema,
@@ -15,6 +16,8 @@ import {
 } from '../validations/notesValidation.js';
 
 const notesRouter = Router();
+
+notesRouter.use(authenticate);
 
 notesRouter.get('/notes', celebrate(getAllNotesSchema), getAllNotes);
 notesRouter.get('/notes/:noteId', celebrate(noteIdSchema), getNoteById);
