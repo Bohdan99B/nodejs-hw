@@ -4,23 +4,29 @@ import { Note } from '../models/note.js';
 export const getAllNotes = async (req, res) => {
   const { page = 1, perPage = 10, tag, search } = req.query;
 
-  const filter = {
-    userId: req.user._id
-  };
+  const notesQuery = Note.find().where('userId').equals(req.user._id);
+  const totalNotesQuery = Note.find().where('userId').equals(req.user._id);
 
   if (tag) {
-    filter.tag = tag;
+    notesQuery.where('tag').equals(tag);
+    totalNotesQuery.where('tag').equals(tag);
   }
 
   if (typeof search === 'string' && search.length > 0) {
-    filter.$text = { $search: search };
+    notesQuery.find({ $text: { $search: search } });
+    totalNotesQuery.find({ $text: { $search: search } });
   }
 
-  const totalNotes = await Note.countDocuments(filter);
-  const totalPages = Math.ceil(totalNotes / perPage);
   const skip = (page - 1) * perPage;
 
-  const notes = await Note.find(filter).skip(skip).limit(perPage);
+  notesQuery.skip(skip).limit(perPage);
+
+  const [notes, totalNotes] = await Promise.all([
+    notesQuery.exec(),
+    totalNotesQuery.countDocuments().exec()
+  ]);
+
+  const totalPages = Math.ceil(totalNotes / perPage);
 
   res.status(200).json({
     page,
@@ -77,7 +83,7 @@ export const updateNote = async (req, res) => {
     },
     req.body,
     {
-      new: true,
+      returnDocument: 'after',
       runValidators: true
     }
   );

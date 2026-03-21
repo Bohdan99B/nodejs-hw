@@ -7,7 +7,7 @@ import {
   deleteNote,
   updateNote
 } from '../controllers/notesController.js';
-import authenticate from '../middleware/authenticate.js';
+import { authenticate } from '../middleware/authenticate.js';
 import {
   createNoteSchema,
   getAllNotesSchema,
