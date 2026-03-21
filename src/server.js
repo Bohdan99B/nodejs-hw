@@ -9,6 +9,7 @@ import notFoundHandler from './middleware/notFoundHandler.js';
 import errorHandler from './middleware/errorHandler.js';
 import authRouter from './routes/authRoutes.js';
 import notesRouter from './routes/notesRoutes.js';
+import usersRouter from './routes/userRoutes.js';
 
 const app = express();
 const PORT = Number(process.env.PORT) || 3000;
@@ -25,6 +26,7 @@ app.use(express.json());
 
 app.use(authRouter);
 app.use(notesRouter);
+app.use(usersRouter);
 app.use(errors());
 
 app.use(notFoundHandler);
@@ -39,3 +41,4 @@ const bootstrap = async () => {
 };
 
 bootstrap();
+
